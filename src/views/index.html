@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cow Say</title>
+  </head>
+  <body>
+    <pre id="message"></pre>
+
+    <script>
+      const message = document.getElementById("message");
+      const authData = JSON.parse(localStorage.getItem("__auth_data__"));
+
+      if (!authData) {
+        localStorage.setItem(
+          "__auth_data__",
+          JSON.stringify({
+            logged: false,
+            username: "",
+          })
+        );
+        window.location = "/login";
+      }
+    </script>
+  </body>
+</html>
