@@ -6,22 +6,49 @@
     <title>Cow Say</title>
   </head>
   <body>
+    <h1>Cow Say</h1>
+
+    <a href="/logout" onclick="localStorage.removeItem('__auth_data__')"
+      >Logout</a
+    >
+
     <pre id="message"></pre>
 
     <script>
       const message = document.getElementById("message");
       const authData = JSON.parse(localStorage.getItem("__auth_data__"));
 
-      if (!authData) {
-        localStorage.setItem(
-          "__auth_data__",
-          JSON.stringify({
-            logged: false,
-            username: "",
-          })
-        );
+      if (authData && !authData.logged) {
         window.location = "/login";
       }
+
+      if (!authData) {
+        fetch("/session")
+          .then((resp) => resp.json())
+          .then((data) => {
+            if (data.logged) {
+              localStorage.setItem(
+                "__auth_data__",
+                JSON.stringify({
+                  logged: true,
+                  username: data.username,
+                })
+              );
+            } else {
+              localStorage.setItem(
+                "__auth_data__",
+                JSON.stringify({
+                  logged: false,
+                  username: "",
+                })
+              );
+              window.location = "/login";
+            }
+          });
+      }
+      fetch("/cowsay")
+        .then((r) => r.json())
+        .then((r) => (message.innerHTML = r.message));
     </script>
   </body>
 </html>

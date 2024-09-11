@@ -7,15 +7,67 @@
   </head>
   <body>
     <h1>Register</h1>
-    <form action="/register" method="post">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username" required />
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password" required />
-      <br />
-      <input type="submit" value="Register" />
+    <form action="/register" method="post" id="registerForm">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required />
+        <p style="color: red" id="usernameError"></p>
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required />
+        <p style="color: red" id="passwordError"></p>
+      </div>
+      <div>
+        <input type="submit" value="Register" />
+      </div>
     </form>
-    <a href="/login">Login</a>
+    <p style="color: red" id="registerError"></p>
+    <div>
+      <a href="/login">Login</a>
+    </div>
+
+    <script>
+      const registerForm = document.getElementById("registerForm");
+
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const username = form.username.value;
+        const password = form.password.value;
+
+        if (username === "") {
+          const usernameError = document.getElementById("usernameError");
+          usernameError.innerHTML = "Username is required";
+          return;
+        }
+
+        if (password === "") {
+          const passwordError = document.getElementById("passwordError");
+          passwordError.innerHTML = "Password is required";
+        }
+
+        fetch("/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        })
+          .then(async (resp) => {
+            if (!resp.ok) {
+              const { message } = await resp.json();
+              throw new Error(message);
+            }
+
+            window.location = "/login";
+          })
+          .catch((e) => {
+            const registerError = document.getElementById("registerError");
+            registerError.innerHTML = e.message;
+          });
+      });
+    </script>
   </body>
 </html>

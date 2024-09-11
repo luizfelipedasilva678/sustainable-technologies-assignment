@@ -3,19 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Register</title>
   </head>
   <body>
     <h1>Login</h1>
-    <form action="/login" method="post">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username" required />
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password" required />
-      <br />
-      <input type="submit" value="Login" />
+    <form action="/login" method="post" id="loginForm">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required />
+        <p style="color: red" id="usernameError"></p>
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required />
+        <p style="color: red" id="passwordError"></p>
+      </div>
+      <div>
+        <input type="submit" value="Login" />
+      </div>
     </form>
-    <a href="/register">Register</a>
+    <p style="color: red" id="loginError"></p>
+    <div>
+      <a href="/register">Register</a>
+    </div>
+
+    <script>
+      const loginForm = document.getElementById("loginForm");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const username = form.username.value;
+        const password = form.password.value;
+
+        if (username === "") {
+          const usernameError = document.getElementById("usernameError");
+          usernameError.innerHTML = "Username is required";
+          return;
+        }
+
+        if (password === "") {
+          const passwordError = document.getElementById("passwordError");
+          passwordError.innerHTML = "Password is required";
+        }
+
+        fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        })
+          .then(async (resp) => {
+            if (!resp.ok) {
+              const { message } = await resp.json();
+              throw new Error(message);
+            }
+
+            const { username } = await resp.json();
+            localStorage.setItem(
+              "__auth_data__",
+              JSON.stringify({ username, logged: true })
+            );
+
+            window.location = "/";
+          })
+          .catch((e) => {
+            const loginError = document.getElementById("loginError");
+            loginError.innerHTML = e.message;
+          });
+      });
+    </script>
   </body>
 </html>
