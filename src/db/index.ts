@@ -4,6 +4,7 @@ async function initDB() {
   const conection = await createConnection({
     user: "root",
     password: "root",
+    host: process.env.NODE_ENV === "production" ? "database" : "localhost",
   });
 
   await conection.connect();

@@ -22,33 +22,32 @@
         window.location = "/login";
       }
 
-      if (!authData) {
-        fetch("/session")
-          .then((resp) => resp.json())
-          .then((data) => {
-            if (data.logged) {
-              localStorage.setItem(
-                "__auth_data__",
-                JSON.stringify({
-                  logged: true,
-                  username: data.username,
-                })
-              );
-            } else {
-              localStorage.setItem(
-                "__auth_data__",
-                JSON.stringify({
-                  logged: false,
-                  username: "",
-                })
-              );
-              window.location = "/login";
-            }
-          });
-      }
-      fetch("/cowsay")
-        .then((r) => r.json())
-        .then((r) => (message.innerHTML = r.message));
+      fetch("/session")
+        .then((resp) => resp.json())
+        .then((data) => {
+          if (data.logged) {
+            localStorage.setItem(
+              "__auth_data__",
+              JSON.stringify({
+                logged: true,
+                username: data.username,
+              })
+            );
+
+            fetch("/cowsay")
+              .then((r) => r.json())
+              .then((r) => (message.innerHTML = r.message));
+          } else {
+            localStorage.setItem(
+              "__auth_data__",
+              JSON.stringify({
+                logged: false,
+                username: "",
+              })
+            );
+            window.location = "/login";
+          }
+        });
     </script>
   </body>
 </html>
