@@ -13,8 +13,7 @@ services:
   server:
     container_name: server
     restart: always
-    build:
-      context: .
+    image: luizfelipe678/trabluizfelipe:latest
     depends_on:
       - db
     environment:
