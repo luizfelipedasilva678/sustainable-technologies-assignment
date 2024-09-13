@@ -12,6 +12,8 @@ Para rodar o projeto basta executar o comando a abaixo:
 
 `docker compose up -d`
 
+E depois acessar http://localhost
+
 ## Imagem
 
 A imagem pode ser encontrada no DockerHub [AQUI](https://hub.docker.com/r/luizfelipe678/trabluizfelipe).
